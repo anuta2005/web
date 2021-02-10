@@ -1,0 +1,30 @@
+import sys
+
+from Samples.business import find_business
+from Samples.distance import lonlat_distance
+from Samples.geocoder import get_coordinates
+from Samples.mapapi_PG import show_map
+
+toponym_to_find = " ".join(sys.argv[1:])
+
+if toponym_to_find:
+    x, y = get_coordinates(toponym_to_find)
+    xy = f"ll={x},{y}"
+    span ="0.005,0.005"
+
+    organiz = find_business(xy, span, "аптека")
+    point = organiz["geometry"]["coordinates"]
+    x1 = float(point[0])
+    x2 = float(point[1])
+    point = f"pt={x1},{x2},pm2dgl"
+    show_map(f"ll={xy}&spn={span}", "map", add_params=point)
+    points = point + f"~{xy},pm2rdl"
+    show_map(f"ll={xy}&spn={span}", "map", add_params=points)
+    show_map(map_type="map", add_params=points)
+    name = organiz["properties"]["CompanyMetaData"]["name"]
+    add = organiz["properties"]["CompanyMetaData"]["address"]
+    print("Название организации:", name)
+    print("Адрес:", add)
+
+else:
+    print("ERROR")
