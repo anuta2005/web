@@ -1,0 +1,18 @@
+import sys
+
+from Samples.geocoder import get_coordinates, get_ll_span
+from Samples.mapapi_PG import show_map
+
+toponym_to_find = " ".join(sys.argv[1:])
+
+if toponym_to_find:
+    x, y = get_coordinates(toponym_to_find)
+    xy = f"ll={x},{y}&spn=0.005,0.005"
+    show_map(xy, "map")
+
+    x1, x2 = get_ll_span(toponym_to_find)
+    x1x2 = f"ll={x1}&spn={x2}"
+    param = f"pt={x1x2}"
+    show_map(xy, "map", add_params=param)
+else:
+    print("ERROR")
